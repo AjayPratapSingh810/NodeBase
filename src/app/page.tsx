@@ -1,7 +1,10 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import authClient from "@/lib/auth-client";
-import { requireAuth } from "@/lib/auth-utils";
-import { caller } from "@/trpc/server";
+// import { requireAuth } from "@/lib/auth-utils";
+import { useTRPC } from "@/trpc/client";
+// import { caller } from "@/trpc/server";
+import { useMutation } from "@tanstack/react-query";
 // import { caller } from "@/trpc/server";
 
 // const Page = async () => {
@@ -34,13 +37,18 @@ import { caller } from "@/trpc/server";
 
 // export default Page;
 
-const Page = async () => {
-  await requireAuth();
-  const users = await caller.getUsers();
+const Page = () => {
+  // await requireAuth();
+  // const users = await caller.getUsers();
+  const trpc = useTRPC();
+  const testAi = useMutation(trpc.testAi.mutationOptions());
   return (
     <>
-      {JSON.stringify(users)}
+      {/* {JSON.stringify(users)} */}
       {/* <Button onClick={() => authClient.signOut()}>Sign Out</Button> */}
+      <Button disabled={testAi.isPending} onClick={() => testAi.mutate()}>
+        Test Ai
+      </Button>
     </>
   );
 };
