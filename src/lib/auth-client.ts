@@ -1,4 +1,5 @@
-import { createAuthClient } from "better-auth/client"
+import { polarClient } from "@polar-sh/better-auth";
+import { createAuthClient } from "better-auth/client";
 
-const authClient = createAuthClient();
+const authClient = createAuthClient({ plugins: [polarClient()] });
 export default authClient;
