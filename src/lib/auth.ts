@@ -1,12 +1,11 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-// If your Prisma file is located elsewhere, you can change the path
 import prisma from "./db";
-import { polar, checkout } from "@polar-sh/better-auth";
+import { polar, checkout, portal } from "@polar-sh/better-auth";
 import { polarClient } from "./polar";
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: "postgresql", // or "mysql", "postgresql", ...etc
+    provider: "postgresql",
   }),
   emailAndPassword: {
     enabled: true,
@@ -20,13 +19,14 @@ export const auth = betterAuth({
         checkout({
           products: [
             {
-              productId: "a73b6532-18bb-4a82-981d-1eb0d87a6f39",
-              slug: "pro", // Custom slug for easy reference in Checkout URL, e.g. /checkout/nodebase
+              productId: "5bffa6a8-58ef-4213-8bd7-087c94d2c8f1",
+              slug: "pro",
             },
           ],
           successUrl: process.env.POLAR_SUCCESS_URL,
           authenticatedUsersOnly: true,
         }),
+        portal(),
       ],
     }),
   ],
