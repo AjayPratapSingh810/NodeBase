@@ -13,8 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useSuspenseWorkflow } from "@/features/workflows/hooks/use-workflows";
-// import { useSuspenseWorkflow, useUpdateWorkflow, useUpdateWorkflowName } from "@/features/workflows/hooks/use-workflows";
+import { useSuspenseWorkflow, useUpdateWorkflowName } from "@/features/workflows/hooks/use-workflows";
 import { useAtomValue } from "jotai";
 import { editorAtom } from "../store/atoms";
 
@@ -49,7 +48,7 @@ export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
 
 export const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
   const { data: workflow } = useSuspenseWorkflow(workflowId);
-  // const updateWorkflow = useUpdateWorkflowName();
+  const updateWorkflow = useUpdateWorkflowName();
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(workflow.name);
@@ -76,10 +75,10 @@ export const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
     }
 
     try {
-      // await updateWorkflow.mutateAsync({
-      //   id: workflowId,
-      //   name,
-      // });
+      await updateWorkflow.mutateAsync({
+        id: workflowId,
+        name,
+      });
     } catch {
       setName(workflow.name);
     } finally {
