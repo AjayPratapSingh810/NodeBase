@@ -1,6 +1,6 @@
 "use client";
 
-// import { createId } from "@paralleldrive/cuid2";
+import { createId } from "@paralleldrive/cuid2";
 import { useReactFlow } from "@xyflow/react";
 import {
   GlobeIcon,
@@ -86,7 +86,7 @@ export function NodeSelector({
       });
 
       const newNode = {
-        id: "hello",
+        id: createId(),
         data: {},
         position: flowPosition,
         type: selection.type,
