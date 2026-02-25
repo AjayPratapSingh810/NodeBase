@@ -26,7 +26,7 @@ export const executeWorkflow = inngest.createFunction(
     event: "workflows/execute.workflow",
     channels: [httpRequestChannel(), manualTriggerChannel()],
   },
-  async ({ event, step }) => {
+  async ({ event, step, publish }) => {
     const inngestEventId = event.id;
     const workflowId = event.data.workflowId;
 
@@ -78,7 +78,7 @@ export const executeWorkflow = inngest.createFunction(
         userId,
         context,
         step,
-        // publish,
+        publish,
       });
     }
 
