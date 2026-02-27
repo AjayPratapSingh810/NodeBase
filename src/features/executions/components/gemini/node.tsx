@@ -6,6 +6,7 @@ import { BaseExecutionNode } from "../base-execution-node";
 import { GeminiDialog, GeminiFormValues } from "./dialog";
 import { useNodeStatus } from "../../hooks/use-node-status";
 import { GEMINI_CHANNEL_NAME } from "@/inngest/channels/gemini";
+import { fetchGeminiRealtimeToken } from "./action";
 
 type GeminiNodeData = {
   variableName?: string;
@@ -20,18 +21,16 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { setNodes } = useReactFlow();
 
-  // const nodeStatus = useNodeStatus({
-  //   nodeId: props.id,
-  //   channel: GEMINI_CHANNEL_NAME,
-  //   topic: "status",
-  //   refreshToken: fetchGeminiRealtimeToken,
-  // });
+  const nodeStatus = useNodeStatus({
+    nodeId: props.id,
+    channel: GEMINI_CHANNEL_NAME,
+    topic: "status",
+    refreshToken: fetchGeminiRealtimeToken,
+  });
 
-  const nodeStatus = 'initial'
   const handleOpenSettings = () => setDialogOpen(true);
 
   const handleSubmit = (values: GeminiFormValues) => {
-    console.log("Submitted values:", values);
     setNodes((nodes) => nodes.map((node) => {
       if (node.id === props.id) {
         return {

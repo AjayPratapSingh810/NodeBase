@@ -97,7 +97,7 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
 
   try {
     const { steps } = await step.ai.wrap("gemini-generate-text", generateText, {
-      model: google("gemini-2.0-flash"),
+      model: google("gemini-2.5-flash"),
       system: systemPrompt,
       prompt: userPrompt,
       experimental_telemetry: {
@@ -109,16 +109,11 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
 
     const text =
       steps[0].content[0].type === "text" ? steps[0].content[0].text : "";
-    console.log("Generated text:", text);
     await publish(
       geminiChannel().status({
         nodeId,
         status: "success",
       }),
-    );
-    console.log(
-      "process.env.GOOGLE_GENERATIVE_AI_API_KEY ",
-      process.env.GOOGLE_GENERATIVE_AI_API_KEY,
     );
     return {
       ...context,

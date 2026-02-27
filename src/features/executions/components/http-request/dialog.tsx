@@ -90,7 +90,6 @@ export const HttpRequestDialog = ({
 
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("values", values);
     onSubmit(values);
     onOpenChange(false);
   };
