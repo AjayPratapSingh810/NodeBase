@@ -8,6 +8,8 @@ import { getExecutor } from "@/features/executions/lib/execution-registory";
 import { NodeType } from "@/generated/prisma/enums";
 import { googleFormTriggerChannel } from "./channels/google-form-trigger";
 import { geminiChannel } from "./channels/gemini";
+import { openAiChannel } from "./channels/openai";
+import { anthropicChannel } from "./channels/anthropic";
 
 export const executeWorkflow = inngest.createFunction(
   {
@@ -31,6 +33,8 @@ export const executeWorkflow = inngest.createFunction(
       manualTriggerChannel(),
       googleFormTriggerChannel(),
       geminiChannel(),
+      openAiChannel(),
+      anthropicChannel(),
     ],
   },
   async ({ event, step, publish }) => {

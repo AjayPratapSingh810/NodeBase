@@ -94,6 +94,8 @@ enum NodeType {
   GOOGLE_FORM_TRIGGER
   STRIPE_TRIGGER
   GEMINI
+  ANTHROPIC
+  OPENAI
 }
 
 model Node {
