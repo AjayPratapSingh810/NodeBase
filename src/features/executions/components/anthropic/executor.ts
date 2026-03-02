@@ -5,7 +5,7 @@ import { createAnthropic } from "@ai-sdk/anthropic";
 import type { NodeExecutor } from "@/features/executions/types";
 import prisma from "@/lib/db";
 import { anthropicChannel } from "@/inngest/channels/anthropic";
-// import { decrypt } from "@/lib/encryption";
+import { decrypt } from "@/lib/encryption";
 
 Handlebars.registerHelper("json", (context) => {
   const jsonString = JSON.stringify(context, null, 2);
@@ -46,15 +46,15 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
     throw new NonRetriableError("Anthropic node: Variable name is missing");
   }
 
-  // if (!data.credentialId) {
-  //   await publish(
-  //     anthropicChannel().status({
-  //       nodeId,
-  //       status: "error",
-  //     }),
-  //   );
-  //   throw new NonRetriableError("Anthropic node: Credential is required");
-  // }
+  if (!data.credentialId) {
+    await publish(
+      anthropicChannel().status({
+        nodeId,
+        status: "error",
+      }),
+    );
+    throw new NonRetriableError("Anthropic node: Credential is required");
+  }
 
   if (!data.userPrompt) {
     await publish(
@@ -71,27 +71,27 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
     : "You are a helpful assistant.";
   const userPrompt = Handlebars.compile(data.userPrompt)(context);
 
-  // const credential = await step.run("get-credential", () => {
-  //   return prisma.credential.findUnique({
-  //     where: {
-  //       id: data.credentialId,
-  //       userId,
-  //     },
-  //   });
-  // });
+  const credential = await step.run("get-credential", () => {
+    return prisma.credential.findUnique({
+      where: {
+        id: data.credentialId,
+        userId,
+      },
+    });
+  });
 
-  // if (!credential) {
-  //   await publish(
-  //     anthropicChannel().status({
-  //       nodeId,
-  //       status: "error",
-  //     })
-  //   );
-  //   throw new NonRetriableError("Anthropic node: Credential not found");
-  // }
+  if (!credential) {
+    await publish(
+      anthropicChannel().status({
+        nodeId,
+        status: "error",
+      }),
+    );
+    throw new NonRetriableError("Anthropic node: Credential not found");
+  }
 
   const anthropic = createAnthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY || "",
+    apiKey: decrypt(credential.value),
   });
 
   try {
