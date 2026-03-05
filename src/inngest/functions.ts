@@ -5,7 +5,7 @@ import { topologicalSort } from "./utils";
 import { httpRequestChannel } from "./channels/http-request";
 import { manualTriggerChannel } from "./channels/manual-trigger";
 import { getExecutor } from "@/features/executions/lib/execution-registory";
-import { NodeType } from "@/generated/prisma/enums";
+import { ExecutionStatus, NodeType } from "@/generated/prisma/enums";
 import { googleFormTriggerChannel } from "./channels/google-form-trigger";
 import { geminiChannel } from "./channels/gemini";
 import { openAiChannel } from "./channels/openai";
@@ -47,14 +47,14 @@ export const executeWorkflow = inngest.createFunction(
       throw new NonRetriableError("Event ID or workflow ID is missing");
     }
 
-    // await step.run("create-execution", async () => {
-    //   return prisma.execution.create({
-    //     data: {
-    //       workflowId,
-    //       inngestEventId,
-    //     },
-    //   });
-    // });
+    await step.run("create-execution", async () => {
+      return prisma.execution.create({
+        data: {
+          workflowId,
+          inngestEventId,
+        },
+      });
+    });
 
     const sortedNodes = await step.run("prepare-workflow", async () => {
       const workflow = await prisma.workflow.findUniqueOrThrow({
@@ -95,16 +95,16 @@ export const executeWorkflow = inngest.createFunction(
       });
     }
 
-    // await step.run("update-execution", async () => {
-    //   return prisma.execution.update({
-    //     where: { inngestEventId, workflowId },
-    //     data: {
-    //       status: ExecutionStatus.SUCCESS,
-    //       completedAt: new Date(),
-    //       output: context,
-    //     },
-    //   });
-    // });
+    await step.run("update-execution", async () => {
+      return prisma.execution.update({
+        where: { inngestEventId, workflowId },
+        data: {
+          status: ExecutionStatus.SUCCESS,
+          completedAt: new Date(),
+          output: context,
+        },
+      });
+    });
 
     return {
       workflowId,
